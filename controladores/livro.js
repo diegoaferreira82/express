@@ -1,12 +1,90 @@
+//controlador fica responsável apenas por retorar status e direcionar serviços
+
+//deve importar os serviços
+const { getTodosLivros, getLivroPorId, insereLivro, modificaLivro, deletaLivroPorId } = require("../servicos/livro.js")
+
 function getLivros(req, res) {
     try {
-        res.send('Olá mundo da Alura do Brasil!')
+        const livros = getTodosLivros();
+        res.send(livros);
     } catch (error) {
         res.status(500)  //atribui o codigo do erro 500
         res.send(error.message)
     }
 }
 
+function getLivro(req, res) {
+    try {
+        const id = req.params.id;
+
+        if (id && Number(id)) {
+            const livro = getLivroPorId(id);
+            res.send(livro);
+        } else {
+            res.status(422)
+            res.send("ID Inválido!")
+        }
+
+    } catch (error) {
+        res.status(500)  //atribui o codigo do erro 500
+        res.send(error.message)
+    }
+}
+
+function postLivro(req, res) {
+    try {
+        const livroNovo = req.body;
+        if (req.body.nome) { // se houver campo nome
+            insereLivro(livroNovo);
+            res.status(201);
+            res.send("Livro Inserido com Sucesso!")
+        } else {
+            res.send("Campo nome é obrigatório!")
+        }
+    } catch (error) {
+        res.status(500)  //atribui o codigo do erro 500
+        res.send(error.message)
+    }
+}
+
+function patchLivro(req, res) {
+    try {
+        const id = req.params.id;
+        const body = req.body;
+
+        if (id && Number(id)) {
+            modificaLivro(body, id);
+            res.send("Item modificado com sucesso!")
+        } else {
+            res.status(422)
+            res.send("ID Inválido!")
+        }
+    } catch (error) {
+        res.status(500)  //atribui o codigo do erro 500
+        res.send(error.message)
+    }
+}
+
+function deleteLivro(req, res) {
+    try {
+        if (id && Number(id)) {
+            const id = req.params.id; //pega o id da URL
+            deletaLivroPorId(id) //chama o serviço
+            res.send("livro deletado com sucesso")
+        } else {
+            res.status(422)
+            res.send("ID Inválido!")
+        }
+    } catch (error) {
+        res.status(500)
+        res.send(error.message)
+    }
+}
+
 module.exports = {
-    getLivros
+    getLivros,
+    getLivro,
+    postLivro,
+    patchLivro,
+    deleteLivro
 }

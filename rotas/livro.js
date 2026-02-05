@@ -1,22 +1,20 @@
 const { Router } = require("express")
-const { getLivros } = require("../controladores/livro")
+const { getLivros, getLivro, postLivro, patchLivro, deleteLivro } = require("../controladores/livro")
 
 const router = Router()
 
 // essa função getLivros ficou isolada em outro arquivo.
 //lá no arquivo faz o module.exportes e aqui faz o require.
-router.get('/', getLivros)
+router.get('/', getLivros);
 
-router.post('/', (req, res) => {
-    res.send('Requisição POST')
-})
+router.get('/:id', getLivro);
 
-router.patch('/', (req, res) => {
-    res.send('Requisição PATCH')
-})
+//passa todas as informações a serem incluidas
+router.post('/', postLivro);
 
-router.delete('/', (req, res) => {
-    res.send('Requisição DELETE')
-})
+//passa somente as informações a serem alteradas no body e o parametro(id) na url
+router.patch('/:id', patchLivro);
+
+router.delete('/:id', deleteLivro)
 
 module.exports = router
